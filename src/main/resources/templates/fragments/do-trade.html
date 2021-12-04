@@ -1,0 +1,33 @@
+<form action="#" th:action="@{/trade}" th:object="${trade}" method="post">
+    <div class="form-group">
+        <label for="account">account</label>
+        <input type="text" th:field="*{account}" class="form-control" id="account"/>
+    </div>
+    <div class="form-group">
+        <label for="symbol">symbol</label>
+        <input type="text" th:field="*{symbol}" class="form-control" id="symbol"/>
+    </div>
+    <!-- dropdown - buy/sell -->
+    <div class="form-group">
+        <label for="type">Type</label> 
+        <input type="text" th:field="*{type}" class="form-control" id="type" aria-describedby="typeHelp"/>
+        <small id="typeHelp" class="form-text text-muted">dropdown with buy or sell</small>
+    </div>
+    <div class="form-group">
+        <label for="shares">Shares</label>
+        <input type="text" th:field="*{shares}" class="form-control" id="shares"/>
+    </div>
+    <!-- pre-populated or market/limit -->
+    <div class="form-group">
+        <label for="price">Price</label>
+        <input type="text" th:field="*{price}" class="form-control" id="price" aria-describedby="priceHelp"/>
+        <small id="priceHelp" class="form-text text-muted">pre-populated or dropdown with market/limit</small>
+    </div>
+    <!-- calculated based on price above -->
+    <div class="form-group">
+        <label for="amount">Amount</label>
+        <input type="text" th:field="*{amount}" class="form-control" id="amount" aria-describedby="amountHelp"/>
+        <small id="amountHelp" class="form-text text-muted">calculated based on shares x price above</small>
+    </div>
+    <button type="submit" class="btn btn-primary">Submit</button>
+</form>
