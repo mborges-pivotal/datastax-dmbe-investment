@@ -11,4 +11,6 @@ public interface PositionRepository extends CrudRepository<Position, PositionKey
 
     List<Position> findByKeyAccount(String account);
     
+    void deleteAllByKeyAccount(String account);
+    
 }

@@ -12,4 +12,7 @@ public interface TradeSDRepository extends CrudRepository<TradeSD, TradeSymbolKe
     List<TradeSD> findByKeyAccount(String account);
 
     List<TradeSD> findByKeyAccountAndKeySymbol(String account, String symbol);
+
+    void deleteAllByKeyAccount(String account);
+
 }

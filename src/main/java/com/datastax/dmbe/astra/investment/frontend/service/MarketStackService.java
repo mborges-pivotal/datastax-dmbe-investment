@@ -1,6 +1,5 @@
 package com.datastax.dmbe.astra.investment.frontend.service;
 
-import java.math.BigDecimal;
 import java.util.Arrays;
 
 import com.jayway.jsonpath.DocumentContext;

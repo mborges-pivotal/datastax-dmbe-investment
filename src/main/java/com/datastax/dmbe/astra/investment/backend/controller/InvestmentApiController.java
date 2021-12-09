@@ -20,8 +20,9 @@ import com.datastax.dmbe.astra.investment.backend.repository.TradeDRepository;
 import com.datastax.dmbe.astra.investment.backend.repository.TradeSDRepository;
 import com.datastax.dmbe.astra.investment.backend.repository.TradeTDRepository;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -29,24 +30,30 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+
 @RestController
+@RequiredArgsConstructor
+@Slf4j
 @RequestMapping("/api")
 public class InvestmentApiController {
 
-    @Autowired
-    private AccountRepository accountRepo;
+    private final AccountRepository accountRepo;
+    private final PositionRepository positionRepo;
+    private final TradeDRepository tradeDRepo;
+    private final TradeSDRepository tradeSDRepo;
+    private final TradeTDRepository tradeTDRepo;
 
-    @Autowired
-    private PositionRepository positionRepo;
-
-    @Autowired
-    private TradeDRepository tradeDRepo;
-
-    @Autowired
-    private TradeSDRepository tradeSDRepo;
-
-    @Autowired
-    private TradeTDRepository tradeTDRepo;
+    // @Autowired
+    // public InvestmentApiController(AccountRepository accountRepo, PositionRepository positionRepo,
+    //         TradeDRepository tradeDRepo, TradeSDRepository tradeSDRepo, TradeTDRepository tradeTDRepo) {
+    //             this.accountRepo = accountRepo;
+    //             this.positionRepo = positionRepo;
+    //             this.tradeDRepo = tradeDRepo;
+    //             this.tradeSDRepo = tradeSDRepo;
+    //             this.tradeTDRepo = tradeTDRepo;
+    // }
 
     @RequestMapping(value = "/accounts/{username}", method = RequestMethod.GET)
     public List<Account> listAccounts(@PathVariable("username") String userName) {
@@ -96,5 +103,28 @@ public class InvestmentApiController {
 
         return ResponseEntity.accepted().body(trade);
     }
+
+    @DeleteMapping("/accounts/{username}")
+    public ResponseEntity<Void> deleteAllAccounts(@PathVariable("username") String userName) {
+
+        List<Account> accounts = accountRepo.findByKeyUserName(userName);
+
+        if(accounts.size() <= 0) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+
+        // MMB: Should we run this in a batch
+        for(Account account: accounts) {
+
+            log.info("Deleting {}", account);
+            
+            positionRepo.deleteAllByKeyAccount(account.getKey().getUserName());    
+            tradeDRepo.deleteAllByKeyAccount(account.getKey().getUserName());    
+            tradeSDRepo.deleteAllByKeyAccount(account.getKey().getUserName());    
+            tradeTDRepo.deleteAllByKeyAccount(account.getKey().getUserName());    
+        }
+
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }    
 
 }

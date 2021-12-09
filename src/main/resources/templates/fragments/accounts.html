@@ -11,7 +11,7 @@
           </tr>
         </thead>
         <tbody>
-          <tr th:each="a, itrStat : ${accounts}" th:classappend="${itrStat.index == 0 ? 'table-active' : ''}">
+          <tr th:id="${'acct-'+ a.key.accountNumber}" th:each="a, itrStat : ${accounts}" th:classappend="${itrStat.index == 0 ? 'table-active' : ''}">
             <td th:text="${a.key.accountNumber}" />
             <td th:text="${#numbers.formatDecimal(a.cashBalance,4,'COMMA',2,'POINT')}" />
           </tr>

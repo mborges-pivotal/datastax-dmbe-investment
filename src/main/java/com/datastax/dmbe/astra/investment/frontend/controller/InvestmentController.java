@@ -14,6 +14,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+
 
 import java.util.List;
 
@@ -52,6 +54,23 @@ public class InvestmentController {
 
         return "home";
     }
+
+    // UI Fragments
+
+    @GetMapping("/showPositionsPart/{account}")
+    public String showPositionsPart(Model model, @PathVariable String account) {
+      model.addAttribute("positions", api.listPositionsByAccount(account));
+      return "fragments/positions";
+    }
+
+    @GetMapping("/showTradesPart/{account}")
+    public String showTradesPart(Model model, @PathVariable String account) {
+      model.addAttribute("positions", api.listPositionsByAccount(account));
+      model.addAttribute("trades", api.listTradesByAccount(account, null, null));
+      return "fragments/trades";
+    }
+
+    // Updates
 
     @PostMapping("/trade")
     public String insertTrade(HttpServletRequest request, @ModelAttribute Trade trade, Model model) {

@@ -13,4 +13,7 @@ public interface TradeTDRepository extends CrudRepository<TradeTD, TradeTypeKey>
 
     List<TradeTD> findByKeyAccountAndKeyType(String account, String type);
 
+    void deleteAllByKeyAccount(String account);
+
+
 }

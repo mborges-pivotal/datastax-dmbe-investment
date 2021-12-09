@@ -10,5 +10,8 @@ import org.springframework.data.repository.CrudRepository;
 public interface TradeDRepository extends CrudRepository<TradeD, TradeKey> {
 
     List<TradeD> findByKeyAccount(String account);
+    
+    void deleteAllByKeyAccount(String account);
+
 
 }
