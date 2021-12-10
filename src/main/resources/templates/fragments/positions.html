@@ -1,19 +1,17 @@
 <div id="positions" class="card">
   <div class="card-body">
     <h5 class="card-title">Positions</h5>
-    <!-- <h6 class="card-subtitle mb-2 text-muted" th:text="${userName} + ' - ' + ${name}" /> -->
+    <h6 class="card-subtitle mb-2 text-muted" th:text="${'Account: ' + account}" />
 
-    <table class="table">
+    <table class="table table-sm">
       <thead>
         <tr>
-          <th scope="col">Account</th>
           <th scope="col">Symbol</th>
           <th scope="col">Quantity</th>
         </tr>
       </thead>
       <tbody>
         <tr th:each="p : ${positions}">
-          <td th:text="${p.key.account}" />
           <td th:text="${p.key.symbol}" />
           <td th:text="${#numbers.formatDecimal(p.quantity,1,'COMMA',2,'POINT')}" />
         </tr>

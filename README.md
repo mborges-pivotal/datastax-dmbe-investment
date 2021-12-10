@@ -4,6 +4,12 @@ This is an Spring Boot application that implements the [Investment Portfolio Dat
 
 For simplicity we have both backend and frontend components built into this one application, but we intent to have a clear deliniation of these 2 components. 
 
+## TODO
+* http session with username
+* test suite order
+* timeuuid to date in UI
+* integrate symbol price into ui
+
 ## Data Platform
 We are using Astra not only as our Cassandra / NoSQL datastore, but as our data platform.
 

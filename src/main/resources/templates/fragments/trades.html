@@ -1,12 +1,11 @@
 <div id="trades" class="card">
   <div class="card-body table-responsive">
     <h5 class="card-title">Trades</h5>
-    <!-- <h6 class="card-subtitle mb-2 text-muted" th:text="${userName} + ' - ' + ${name}" /> -->
+    <h6 class="card-subtitle mb-2 text-muted" th:text="${'Account: ' + account}" />
 
-    <table id="tbl-trades" class="table table-striped" style="width:100%">
+    <table id="tbl-trades" class="table table-sm table-striped" style="width:100%">
       <thead>
         <tr>
-          <th scope="col">Account</th>
           <th scope="col">Symbol</th>
           <th scope="col">Date</th> <!-- trade_id -->
           <th scope="col">Type</th> <!-- buy/sell -->
@@ -17,9 +16,8 @@
       </thead>
       <tbody>
         <tr th:each="t : ${trades}">
-          <td th:text="${t.account}" />
           <td th:text="${t.symbol}" />
-          <td th:text="${t.tradeId}" />
+          <td th:text="${#temporals.format(t.date, 'MM/dd/yyyy')}" />
           <td th:text="${t.type}" />
           <td th:text="${#numbers.formatDecimal(t.shares,1,'COMMA',2,'POINT')}" />
           <td th:text="${#numbers.formatDecimal(t.price,1,'COMMA',2,'POINT')}" />

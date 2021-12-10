@@ -22,7 +22,7 @@ import static com.datastax.dmbe.astra.investment.backend.model.trade.TradeUtilit
 
 import lombok.extern.slf4j.Slf4j;
 
-import static org.assertj.core.api.Assertions.assertThat;
+// import static org.assertj.core.api.Assertions.assertThat;
 
 // https://reflectoring.io/spring-boot-data-jpa-test/
 // https://www.baeldung.com/spring-boot-datacassandratest
@@ -31,7 +31,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 // @RunWith(SpringRunner.class)
 @Slf4j
 @DataCassandraTest
-// @DataJdbcTest
 @Import(AstraConfig.class)
 public class InvestmentRepositoryTest {
 
@@ -63,6 +62,10 @@ public class InvestmentRepositoryTest {
             log.info("Saved account {}", a1);
         }
 
+        // orElseThrow(() -> new EntityNotFoundException(id));
+        // orElse(null)
+        accountRepo.findById(ak1).orElseThrow(() -> new Error("Account not found " + ak1));
+
     }
 
     @Test
@@ -70,7 +73,7 @@ public class InvestmentRepositoryTest {
         PositionKey pk1 = new PositionKey("001", "SNAP");
         Position p1 = new Position(pk1, BigDecimal.valueOf(50));
 
-        Position pr1 = positionRepo.findById(pk1).get();
+        Position pr1 = positionRepo.findById(pk1).orElse(null);
         if (pr1 != null) {
             log.info("Position key {} found", pr1);
         } else {
@@ -101,6 +104,18 @@ public class InvestmentRepositoryTest {
 
     @Test
     void deleteAccount() {
+
+        AccountKey ak1 = new AccountKey("mborges", "001");
+        log.info("Deleting {}", ak1);
+            
+        positionRepo.deleteAllByKeyAccount(ak1.getAccountNumber());    
+        tradeDRepo.deleteAllByKeyAccount(ak1.getAccountNumber());    
+        tradeSDRepo.deleteAllByKeyAccount(ak1.getAccountNumber());    
+        tradeTDRepo.deleteAllByKeyAccount(ak1.getAccountNumber());    
+
+        accountRepo.deleteById(ak1);
+        log.info("Deleted {}", ak1);
+
     }
 
 }

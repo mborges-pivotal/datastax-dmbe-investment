@@ -5,7 +5,6 @@ import javax.servlet.http.HttpServletRequest;
 import com.datastax.dmbe.astra.investment.backend.controller.InvestmentApiController;
 import com.datastax.dmbe.astra.investment.backend.model.Trade;
 import com.datastax.dmbe.astra.investment.backend.model.Account;
-import com.datastax.dmbe.astra.investment.frontend.service.MarketStackService;
 import com.datastax.oss.driver.api.core.uuid.Uuids;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,9 +33,6 @@ public class InvestmentController {
     @Autowired
     private InvestmentApiController api;
 
-    @Autowired
-    private MarketStackService marketApi;
-
     @GetMapping("/home")
     public String tradePage(Model model) {
         model.addAttribute("trade", new Trade());
@@ -45,6 +41,8 @@ public class InvestmentController {
         Account a = accounts.get(0);
 
         model.addAttribute("userName", a.getKey().getUserName());
+        model.addAttribute("account", a.getKey().getAccountNumber());
+
         model.addAttribute("name", a.getName());
         model.addAttribute("accounts", accounts);
 
@@ -59,12 +57,14 @@ public class InvestmentController {
 
     @GetMapping("/showPositionsPart/{account}")
     public String showPositionsPart(Model model, @PathVariable String account) {
+      model.addAttribute("account", account);
       model.addAttribute("positions", api.listPositionsByAccount(account));
       return "fragments/positions";
     }
 
     @GetMapping("/showTradesPart/{account}")
     public String showTradesPart(Model model, @PathVariable String account) {
+      model.addAttribute("account", account);
       model.addAttribute("positions", api.listPositionsByAccount(account));
       model.addAttribute("trades", api.listTradesByAccount(account, null, null));
       return "fragments/trades";
@@ -76,9 +76,7 @@ public class InvestmentController {
     public String insertTrade(HttpServletRequest request, @ModelAttribute Trade trade, Model model) {
       model.addAttribute("trade", trade);
       trade.setTradeId(Uuids.timeBased());
-      api.insertTrade(request, trade);
-
-      System.out.println(marketApi.price(trade.getSymbol()));
+      api.createTrade(request, "mborges", trade.getAccount(), trade);
 
       return "home";
     }

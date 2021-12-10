@@ -1,6 +1,8 @@
 package com.datastax.dmbe.astra.investment.backend.model;
 
+import com.datastax.dmbe.astra.investment.backend.util.DateTimeUtils;
 import java.math.BigDecimal;
+import java.time.ZonedDateTime;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -14,8 +16,12 @@ public class Trade {
     private BigDecimal price;
     private BigDecimal amount;
 
-    // Accessor methods
+    // Calculated methods
+    public ZonedDateTime getDate() {
+        return DateTimeUtils.timeBasedUuidToDate(tradeId);    
+    }
 
+    // Accessor methods
 
     public String getAccount() {
         return this.account;

@@ -1,35 +1,26 @@
 package com.datastax.dmbe.astra.investment.backend.controller;
 
-import java.math.BigDecimal;
-import java.util.Optional;
 
-import com.datastax.dmbe.astra.investment.AstraConfig;
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.math.BigDecimal;
+import java.util.List;
+
+import com.datastax.dmbe.astra.investment.backend.loader.CoinbaseCsvLoader;
 import com.datastax.dmbe.astra.investment.backend.model.Account;
 import com.datastax.dmbe.astra.investment.backend.model.AccountKey;
-import com.datastax.dmbe.astra.investment.backend.model.Position;
-import com.datastax.dmbe.astra.investment.backend.model.PositionKey;
 import com.datastax.dmbe.astra.investment.backend.model.Trade;
 import com.datastax.dmbe.astra.investment.backend.repository.AccountRepository;
-import com.datastax.dmbe.astra.investment.backend.repository.PositionRepository;
-import com.datastax.dmbe.astra.investment.backend.repository.TradeDRepository;
-import com.datastax.dmbe.astra.investment.backend.repository.TradeSDRepository;
-import com.datastax.dmbe.astra.investment.backend.repository.TradeTDRepository;
-import com.datastax.oss.driver.api.core.uuid.Uuids;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.data.cassandra.DataCassandraTest;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.annotation.Import;
-import org.springframework.test.context.junit.jupiter.web.SpringJUnitWebConfig;
-
-import static com.datastax.dmbe.astra.investment.backend.model.trade.TradeUtilities.mapAsTradeD;
-import static com.datastax.dmbe.astra.investment.backend.model.trade.TradeUtilities.mapAsTradeSD;
-import static com.datastax.dmbe.astra.investment.backend.model.trade.TradeUtilities.mapAsTradeTD;
+import org.springframework.core.io.ClassPathResource;
 
 import lombok.extern.slf4j.Slf4j;
 
-import static org.assertj.core.api.Assertions.assertThat;
+// import static org.assertj.core.api.Assertions.assertThat;
 
 // https://reflectoring.io/spring-boot-data-jpa-test/
 // https://www.baeldung.com/spring-boot-datacassandratest
@@ -43,10 +34,33 @@ public class InvestmentApiControllerTest {
     @Autowired
     private InvestmentApiController api;
 
+    @Autowired
+    private CoinbaseCsvLoader loader;
+
+    @Autowired
+    private AccountRepository accountRepo;
+
+    @Test
+    void loadCoinbaseCsvFile() throws Exception {
+
+        AccountKey ak1 = new AccountKey("mborges", "001");
+        Account account = new Account(ak1, BigDecimal.ZERO, "Marcelo Borges");
+        accountRepo.save(account);
+        
+        InputStream resource = new ClassPathResource("local/coinbase-1.csv").getInputStream();
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(resource))) {
+            List<Trade> trades = loader.mapFile("001", reader);
+            
+            for(Trade t: trades) {
+                api.createTrade("mborges", t);
+            }
+        }
+
+    }
+
     @Test
     void deleteAccount() {
         log.info("Deleting all accounts for mborges");
-        
         api.deleteAllAccounts("mborges");
     }
 

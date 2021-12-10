@@ -2,5 +2,5 @@
     "java.completion.enabled": false,
     "java.debug.settings.enableRunDebugCodeLens": false,
     "java.test.editor.enableShortcuts": false,
-    "java.configuration.updateBuildConfiguration": "interactive"
+    "java.configuration.updateBuildConfiguration": "automatic"
 }
