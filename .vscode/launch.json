@@ -1,0 +1,14 @@
+{
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Spring Boot-AstraApplication<investment>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "console": "internalConsole",
+            "mainClass": "com.datastax.dmbe.astra.investment.AstraApplication",
+            "projectName": "investment",
+            "args": ""
+        }
+    ]
+}

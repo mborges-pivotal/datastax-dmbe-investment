@@ -53,6 +53,11 @@ public class InvestmentController {
         return "home";
     }
 
+    @GetMapping("/admin")
+    public String adminPage(Model model) {
+      return "admin";
+    }
+
     // UI Fragments
 
     @GetMapping("/showPositionsPart/{account}")

@@ -8,6 +8,8 @@ import org.springframework.data.cassandra.repository.config.EnableCassandraRepos
 
 import lombok.extern.slf4j.Slf4j;
 
+// https://github.com/DataStax-Examples/java-cassandra-driver-from3x-to4
+// https://github.com/DataStax-Examples
 @Slf4j
 @SpringBootApplication
 @EnableConfigurationProperties
