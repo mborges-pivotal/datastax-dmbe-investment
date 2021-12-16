@@ -80,9 +80,9 @@ public class CoinbaseCsvLoader implements Loader {
     }
 
     private static String mapType(String value) {
-        if (value.equals("Receive")) {
+        if (value.equalsIgnoreCase("receive")) {
             return "buy";
-        } else if (value.equals("Conbase Earn")) {
+        } else if (value.equalsIgnoreCase("coinbase earn")) {
             return "buy";
         } else {
             return value.toLowerCase();

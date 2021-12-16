@@ -28,14 +28,15 @@ import java.util.List;
  * 
  */
 @Controller
-public class InvestmentController {
+public class InvestmentController extends BaseController {
 
     @Autowired
     private InvestmentApiController api;
 
-    @GetMapping("/home")
+    @GetMapping(value={"/","/home"})
     public String tradePage(Model model) {
-        model.addAttribute("trade", new Trade());
+      model.addAttribute("pageName", "home");
+      model.addAttribute("trade", new Trade());
         
         List<Account> accounts = api.listAccounts("mborges");
         Account a = accounts.get(0);
@@ -55,6 +56,7 @@ public class InvestmentController {
 
     @GetMapping("/admin")
     public String adminPage(Model model) {
+      model.addAttribute("pageName", "admin");
       return "admin";
     }
 
