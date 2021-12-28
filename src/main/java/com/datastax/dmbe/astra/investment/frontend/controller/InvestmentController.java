@@ -4,17 +4,22 @@ import javax.servlet.http.HttpServletRequest;
 
 import com.datastax.dmbe.astra.investment.backend.controller.InvestmentApiController;
 import com.datastax.dmbe.astra.investment.backend.model.Trade;
+import com.datastax.dmbe.astra.investment.frontend.security.UserCredentialsDto;
 import com.datastax.dmbe.astra.investment.backend.model.Account;
+import com.datastax.dmbe.astra.investment.frontend.security.UserRepository;
 import com.datastax.oss.driver.api.core.uuid.Uuids;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 
+import lombok.extern.slf4j.Slf4j;
+
+import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.List;
 
@@ -27,66 +32,78 @@ import java.util.List;
  * market api references: https://geekflare.com/best-stock-market-api/
  * 
  */
+@Slf4j
 @Controller
 public class InvestmentController extends BaseController {
 
-    @Autowired
-    private InvestmentApiController api;
+  @Autowired
+  private InvestmentApiController api;
 
-    @GetMapping(value={"/","/home"})
-    public String tradePage(Model model) {
+  @GetMapping(value = { "/", "/home" })
+  public String homePage(Model model) {
+    model.addAttribute("pageName", "home");
+    return "home";
+  }
+
+  @GetMapping(value = { "/accounts" })
+  public String tradePage(Model model) {
+    model.addAttribute("pageName", "accounts");
+    model.addAttribute("trade", new Trade());
+
+    String userName = getUserName();
+    List<Account> accounts = api.listAccounts(userName);
+
+    if (accounts.size() <= 0) {
       model.addAttribute("pageName", "home");
-      model.addAttribute("trade", new Trade());
-        
-        List<Account> accounts = api.listAccounts("mborges");
-        Account a = accounts.get(0);
-
-        model.addAttribute("userName", a.getKey().getUserName());
-        model.addAttribute("account", a.getKey().getAccountNumber());
-
-        model.addAttribute("name", a.getName());
-        model.addAttribute("accounts", accounts);
-
-        // Retrieve position for the first account
-        model.addAttribute("positions", api.listPositionsByAccount(a.getKey().getAccountNumber()));
-        model.addAttribute("trades", api.listTradesByAccount(a.getKey().getAccountNumber(), null, null));
-
-        return "home";
-    }
-
-    @GetMapping("/admin")
-    public String adminPage(Model model) {
-      model.addAttribute("pageName", "admin");
-      return "admin";
-    }
-
-    // UI Fragments
-
-    @GetMapping("/showPositionsPart/{account}")
-    public String showPositionsPart(Model model, @PathVariable String account) {
-      model.addAttribute("account", account);
-      model.addAttribute("positions", api.listPositionsByAccount(account));
-      return "fragments/positions";
-    }
-
-    @GetMapping("/showTradesPart/{account}")
-    public String showTradesPart(Model model, @PathVariable String account) {
-      model.addAttribute("account", account);
-      model.addAttribute("positions", api.listPositionsByAccount(account));
-      model.addAttribute("trades", api.listTradesByAccount(account, null, null));
-      return "fragments/trades";
-    }
-
-    // Updates
-
-    @PostMapping("/trade")
-    public String insertTrade(HttpServletRequest request, @ModelAttribute Trade trade, Model model) {
-      model.addAttribute("trade", trade);
-      trade.setTradeId(Uuids.timeBased());
-      api.createTrade(request, "mborges", trade.getAccount(), trade);
-
       return "home";
     }
 
-    
+    Account a = accounts.get(0);
+
+    model.addAttribute("userName", a.getKey().getUserName());
+    model.addAttribute("account", a.getKey().getAccountNumber());
+
+    model.addAttribute("name", a.getName());
+    model.addAttribute("accounts", accounts);
+
+    // Retrieve position for the first account
+    model.addAttribute("positions", api.listPositionsByAccount(a.getKey().getAccountNumber()));
+    model.addAttribute("trades", api.listTradesByAccount(a.getKey().getAccountNumber(), null, null));
+
+    return "accounts";
+  }
+
+  @GetMapping("/admin")
+  public String adminPage(Model model) {
+    model.addAttribute("pageName", "admin");
+    return "admin";
+  }
+
+  // UI Fragments
+
+  @GetMapping("/showPositionsPart/{account}")
+  public String showPositionsPart(Model model, @PathVariable String account) {
+    model.addAttribute("account", account);
+    model.addAttribute("positions", api.listPositionsByAccount(account));
+    return "fragments/positions";
+  }
+
+  @GetMapping("/showTradesPart/{account}")
+  public String showTradesPart(Model model, @PathVariable String account) {
+    model.addAttribute("account", account);
+    model.addAttribute("positions", api.listPositionsByAccount(account));
+    model.addAttribute("trades", api.listTradesByAccount(account, null, null));
+    return "fragments/trades";
+  }
+
+  // Updates
+  @PostMapping("/trade")
+  public String insertTrade(HttpServletRequest request, @ModelAttribute Trade trade, Model model) {
+    model.addAttribute("trade", trade);
+    trade.setTradeId(Uuids.timeBased());
+    api.createTrade(request, getUserName(), trade.getAccount(), trade);
+
+    return "home";
+  }
+
 }

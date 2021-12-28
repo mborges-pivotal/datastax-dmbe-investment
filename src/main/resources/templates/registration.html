@@ -1,0 +1,38 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="fragments/general :: headerfiles">
+    <title>DataStax: registration</title>
+</head>
+
+<body class="text-center bg-gradient-primary">
+
+    <main class="form-signin">
+
+        <!-- Outer Row -->
+        <div class="row justify-content-center">
+
+            <form action="#" th:action="@{/registration}" th:object="${userCredentialsDto}" method="post">
+                <img class="mb-4" th:src="@{/images/ds-logo.png}" alt="" >
+
+                <div class="form-group">
+                    <label for="userName">user name</label>
+                    <input type="text" th:field="*{userName}" class="form-control" id="userName" />
+                </div>
+                <div class="form-group">
+                    <label for="password">password</label>
+                    <input type="password" th:field="*{password}" class="form-control" id="password" />
+                </div>
+                <div class="form-group">
+                    <label for="password">confirm password</label>
+                    <input type="password" class="form-control" id="confirm-password" />
+                </div>
+                <button type="submit" class="btn btn-primary">Submit</button>
+            </form>
+        </div>
+
+    </main>
+
+</body>
+
+</html>

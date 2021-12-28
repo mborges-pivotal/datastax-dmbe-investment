@@ -1,0 +1,65 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="fragments/general :: headerfiles">
+    <title>DataStax: home</title>
+</head>
+
+<body>
+
+    <div class="col-lg-8 mx-auto p-3 py-md-5">
+
+        <div th:replace="fragments/general :: header"></div>
+
+        <main>
+            <div class="row g-1">
+                <div class="col-md-4">
+                    <div th:replace="fragments/accounts"></div>
+                </div>
+                <div class="col-md-8">
+                    <div th:replace="fragments/positions"></div>
+                    <span>&nbsp;</span>
+                    <div th:replace=" fragments/trades"></div>
+                </div>
+            </div>
+        </main>
+
+        <footer class="pt-3 my-3 text-muted border-top">
+
+            <th:block th:insert="fragments/general :: footer"></th:block>
+
+            <script>
+                
+                // Account table selections
+                $('#accounts tbody tr').click(function () {
+                    $('#accounts').find('.table-active').removeClass("table-active");
+                    $(this).addClass("table-active"); // row
+
+                    accountNumber = $(this).attr("id").substring(5); // acct- id prefix
+                    console.log("clicked on account " + accountNumber);
+
+                    // Update Positions Table
+                    $.get("/showPositionsPart/"+accountNumber).done(function (fragment) {
+                        $('#positions').replaceWith(fragment); 
+                    });
+
+                    // Update Trades Table
+                    $.get("/showTradesPart/"+accountNumber).done(function (fragment) { 
+                        $('#trades').replaceWith(fragment); 
+                        $('#tbl-trades').DataTable();
+                    });
+                })
+
+                // Trades DataTable
+                $(document).ready(function () {
+                    $('#tbl-trades').DataTable();
+                });
+                
+                </script>
+
+        </footer>
+
+    </div>
+</body>
+
+</html>

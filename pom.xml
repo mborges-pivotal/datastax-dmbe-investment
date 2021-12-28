@@ -15,7 +15,7 @@
 	<name>investment</name>
 	<description>Basic application to exercise the investment portfolio data model</description>
 	<properties>
-		<java.version>1.8</java.version>
+		<java.version>11</java.version>
 	</properties>
 	<dependencies>
 
@@ -51,11 +51,18 @@
 			<artifactId>spring-boot-starter-data-cassandra</artifactId>
 		</dependency>
 
+		<!-- https://github.com/datastax/astra-sdk-java/wiki/Spring-Boot-Starter-Quickstart -->
+		<dependency>
+			<groupId>com.datastax.astra</groupId>
+			<artifactId>astra-spring-boot-starter</artifactId>
+			<version>0.2.3</version>
+		</dependency>
+
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-actuator</artifactId>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>com.jayway.jsonpath</groupId>
 			<artifactId>json-path</artifactId>

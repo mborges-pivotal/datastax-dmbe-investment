@@ -94,12 +94,16 @@
         <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
           <li><a href="/home" class="nav-link px-2"
               th:classappend="${pageName == 'home'} ? 'link-secondary' : 'link-dark'">Home</a></li>
-          <li><a href="#" class="nav-link px-2"
-              th:classappend="${pageName == 'accounts'} ? 'link-secondary' : 'link-dark'">Accounts</a></li>
-          <li><a href="#" class="nav-link px-2"
-              th:classappend="${pageName == 'positions'} ? 'link-secondary' : 'link-dark'">Positions</a></li>
-          <li><a href="#" class="nav-link px-2"
-              th:classappend="${pageName == 'trades'} ? 'link-secondary' : 'link-dark'">Trades</a></li>
+
+          <th:block sec:authorize="isAuthenticated()">
+            <li><a href="/accounts" class="nav-link px-2"
+                th:classappend="${pageName == 'accounts'} ? 'link-secondary' : 'link-dark'">Accounts</a></li>
+            <li><a href="#" class="nav-link px-2"
+                th:classappend="${pageName == 'positions'} ? 'link-secondary' : 'link-dark'">Positions</a></li>
+            <li><a href="#" class="nav-link px-2"
+                th:classappend="${pageName == 'trades'} ? 'link-secondary' : 'link-dark'">Trades</a></li>
+          </th:block>
+
         </ul>
 
         <!-- <form class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3">
@@ -117,12 +121,21 @@
             </svg>
           </a>
           <ul class="dropdown-menu text-small" aria-labelledby="dropdownUser1">
-            <li><a class="dropdown-item" href="/admin">Settings</a></li>
-            <li><a class="dropdown-item" href="#">Profile</a></li>
-            <li>
-              <hr class="dropdown-divider">
-            </li>
-            <li><a class="dropdown-item" href="/login.html">Sign in</a></li>
+
+            <th:block sec:authorize="isAnonymous()">
+              <li><a class="dropdown-item" href="/registration">Registration</a></li>
+              <li><a class="dropdown-item" href="/login.html">Sign in</a></li>
+            </th:block>
+
+            <th:block sec:authorize="isAuthenticated()">
+              <li><a class="dropdown-item" href="/admin">Settings</a></li>
+              <li><a class="dropdown-item" href="#">Profile</a></li>
+              <li>
+                <hr class="dropdown-divider">
+              </li>
+              <li><a class="dropdown-item" href="/logout.html">Sign out</a></li>
+            </th:block>
+
           </ul>
         </div>
       </div>

@@ -4,6 +4,9 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @Controller
 public class BaseController {
 
@@ -11,7 +14,7 @@ public class BaseController {
     // Helper Methods
     ///////////////////////////////////
 
-     String getUsername() {
+     String getUserName() {
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         String username = null;
 
@@ -20,6 +23,8 @@ public class BaseController {
         } else {
           username = principal.toString();
         }    
+
+        log.info("username is {}", username);
 
         return username;
     }
