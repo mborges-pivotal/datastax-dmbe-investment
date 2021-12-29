@@ -100,8 +100,8 @@
                 th:classappend="${pageName == 'accounts'} ? 'link-secondary' : 'link-dark'">Accounts</a></li>
             <li><a href="#" class="nav-link px-2"
                 th:classappend="${pageName == 'positions'} ? 'link-secondary' : 'link-dark'">Positions</a></li>
-            <li><a href="#" class="nav-link px-2"
-                th:classappend="${pageName == 'trades'} ? 'link-secondary' : 'link-dark'">Trades</a></li>
+            <li><a href="/trade" class="nav-link px-2"
+                th:classappend="${pageName == 'trade'} ? 'link-secondary' : 'link-dark'">Trade</a></li>
           </th:block>
 
         </ul>
@@ -128,8 +128,10 @@
             </th:block>
 
             <th:block sec:authorize="isAuthenticated()">
-              <li><a class="dropdown-item" href="/admin">Settings</a></li>
-              <li><a class="dropdown-item" href="#">Profile</a></li>
+              <th:block sec:authorize="hasRole('ADMIN')">
+                <li><a class="dropdown-item" href="/settings">Settings</a></li>
+              </th:block>
+              <li><a class="dropdown-item" href="/profile">Profile</a></li>
               <li>
                 <hr class="dropdown-divider">
               </li>
@@ -147,10 +149,10 @@
 
     <a href="https://www.datastax.com/learn/data-modeling-by-example/investment-data-model">Data Modeling by
       Example - Investment</a> |
-    <a th:href="@{/home}">Home</a> |
-    <a th:href="@{/api/accounts/mborges}">Accounts</a> |
-    <a th:href="@{/api/positions/001}">Positions</a> |
-    <a th:href="@{/api/trades/001}">Trades</a>
+    <a href="https://astra.datastax.com">Astra</a> |
+    <a href="https://github.com/datastax/astra-sdk-java">Astra SDK for java</a> |
+    <a href="https://stargate.io/">Stargate.io</a> |
+    <a href="https://www.datastax.com/dev">DataStax for Developers</a>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
       integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"

@@ -1,0 +1,32 @@
+<form action="#" th:action="@{/profile}" th:object="${user}" method="post">
+    <div class="form-group  p-3">
+        <label for="name">Name</label>
+        <input type="text" th:field="*{name}" id="name" class="form-control" />
+    </div>
+    <div class="form-group  p-3">
+        <label for="password">Password</label>
+        <input type="password" th:field="*{password}" id="password" class="form-control" />
+    </div>
+    <div class="form-group p-3">
+        <input class="form-check-input" th:field="*{enabled}" id="enabled" type="checkbox">
+        <label class="form-check-label" for="enabled">Enabled</label>
+    </div>
+    <div class="row">
+        <div class="col">
+            <div class="form-group p-3">
+                <select id="roles" th:field="*{roles}" class="form-select p-3" multiple
+                    aria-label="multiple select example">
+                    <option selected th:each="role : *{roles}" th:value="${role}" th:text="${role}" />
+                </select>
+            </div>
+        </div>
+        <div class="col">
+            <div class="form-group p-3">
+                <select id="fld-available-roles" class="form-select p-3" multiple aria-label="multiple select example">
+                    <option th:each="role : ${availableRoles}" th:value="${role}" th:text="${role}" />
+                </select>
+            </div>
+        </div>
+    </div>
+    <button type="submit" class="btn btn-primary">Submit</button>
+</form>

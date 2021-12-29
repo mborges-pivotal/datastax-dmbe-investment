@@ -29,7 +29,7 @@
             <th:block th:insert="fragments/general :: footer"></th:block>
 
             <script>
-                
+
                 // Account table selections
                 $('#accounts tbody tr').click(function () {
                     $('#accounts').find('.table-active').removeClass("table-active");
@@ -39,13 +39,13 @@
                     console.log("clicked on account " + accountNumber);
 
                     // Update Positions Table
-                    $.get("/showPositionsPart/"+accountNumber).done(function (fragment) {
-                        $('#positions').replaceWith(fragment); 
+                    $.get("/showPositionsPart/" + accountNumber).done(function (fragment) {
+                        $('#positions').replaceWith(fragment);
                     });
 
                     // Update Trades Table
-                    $.get("/showTradesPart/"+accountNumber).done(function (fragment) { 
-                        $('#trades').replaceWith(fragment); 
+                    $.get("/showTradesPart/" + accountNumber).done(function (fragment) {
+                        $('#trades').replaceWith(fragment);
                         $('#tbl-trades').DataTable();
                     });
                 })
@@ -54,8 +54,8 @@
                 $(document).ready(function () {
                     $('#tbl-trades').DataTable();
                 });
-                
-                </script>
+
+            </script>
 
         </footer>
 

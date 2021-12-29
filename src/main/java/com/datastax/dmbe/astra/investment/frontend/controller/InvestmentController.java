@@ -4,13 +4,10 @@ import javax.servlet.http.HttpServletRequest;
 
 import com.datastax.dmbe.astra.investment.backend.controller.InvestmentApiController;
 import com.datastax.dmbe.astra.investment.backend.model.Trade;
-import com.datastax.dmbe.astra.investment.frontend.security.UserCredentialsDto;
 import com.datastax.dmbe.astra.investment.backend.model.Account;
-import com.datastax.dmbe.astra.investment.frontend.security.UserRepository;
 import com.datastax.oss.driver.api.core.uuid.Uuids;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -45,8 +42,12 @@ public class InvestmentController extends BaseController {
     return "home";
   }
 
+  ////////////////////////
+  // Accounts
+  ////////////////////////
+
   @GetMapping(value = { "/accounts" })
-  public String tradePage(Model model) {
+  public String accountsPage(Model model) {
     model.addAttribute("pageName", "accounts");
     model.addAttribute("trade", new Trade());
 
@@ -73,13 +74,9 @@ public class InvestmentController extends BaseController {
     return "accounts";
   }
 
-  @GetMapping("/admin")
-  public String adminPage(Model model) {
-    model.addAttribute("pageName", "admin");
-    return "admin";
-  }
-
+  ////////////////////////
   // UI Fragments
+  ////////////////////////
 
   @GetMapping("/showPositionsPart/{account}")
   public String showPositionsPart(Model model, @PathVariable String account) {
@@ -96,14 +93,28 @@ public class InvestmentController extends BaseController {
     return "fragments/trades";
   }
 
-  // Updates
+  ////////////////////////
+  // Trade
+  ////////////////////////
+
+  @GetMapping(value = { "/trade" })
+  public String tradePage(Model model) {
+    model.addAttribute("pageName", "trade");
+    model.addAttribute("trade", new Trade());
+
+    return "trade";
+  }
+
   @PostMapping("/trade")
   public String insertTrade(HttpServletRequest request, @ModelAttribute Trade trade, Model model) {
+    model.addAttribute("pageName", "accounts");
     model.addAttribute("trade", trade);
     trade.setTradeId(Uuids.timeBased());
     api.createTrade(request, getUserName(), trade.getAccount(), trade);
 
-    return "home";
+    log.debug("inserted {}", trade);
+
+    return "accounts";
   }
 
 }

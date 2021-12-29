@@ -1,11 +1,6 @@
 package com.datastax.dmbe.astra.investment.frontend.security;
 
 
-import com.datastax.astra.sdk.AstraClient;
-import com.datastax.stargate.sdk.doc.CollectionClient;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsPasswordService;
 import org.springframework.security.core.userdetails.UserDetailsService;

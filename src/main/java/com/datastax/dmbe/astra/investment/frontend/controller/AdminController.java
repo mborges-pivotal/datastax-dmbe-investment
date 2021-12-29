@@ -1,5 +1,6 @@
 package com.datastax.dmbe.astra.investment.frontend.controller;
 
+import java.util.HashSet;
 import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
@@ -9,9 +10,9 @@ import com.datastax.dmbe.astra.investment.frontend.security.UserCredentials;
 import com.datastax.dmbe.astra.investment.frontend.security.UserCredentialsDto;
 import com.datastax.dmbe.astra.investment.frontend.security.UserRepository;
 
-import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.stereotype.Controller;
@@ -19,18 +20,24 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseStatus;
 
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @AllArgsConstructor
 @Controller
 public class AdminController extends BaseController {
 
+  public static final Set<String> AVAILABLE_ROLES = Set.of("ADMIN", "USER");
+
   private final UserRepository userRepo;
   private final PasswordEncoder passwordEncoder;
+
+  ///////////////////////////////
+  // Registration
+  ///////////////////////////////
 
   @PostMapping("/registration")
   public String register(HttpServletRequest request, @ModelAttribute UserCredentialsDto userCredentialsDto, Model model){
@@ -51,6 +58,48 @@ public class AdminController extends BaseController {
   public String registration(Model model) {
     model.addAttribute("userCredentialsDto", new UserCredentialsDto());
     return "registration";
+  }
+
+  ///////////////////////////////
+  // Settings
+  ///////////////////////////////
+
+  @GetMapping("/settings")
+  public String settingsPage(Model model) {
+    model.addAttribute("pageName", "settings");
+    return "settings";
+  }
+  
+  ///////////////////////////////
+  // Profile
+  ///////////////////////////////
+
+  @GetMapping("/profile")
+  public String profilePage(Model model) {
+    model.addAttribute("pageName", "profile");
+
+    String userName = getUserName();
+    UserCredentials user = userRepo.findById(userName).orElseThrow(() -> new UsernameNotFoundException(userName));
+    model.addAttribute("user", user);
+
+    Set<String> availableRoles = new HashSet<>(AVAILABLE_ROLES);
+    for(String role: user.getRoles()) {
+      availableRoles.remove(role);
+    }
+
+    model.addAttribute("availableRoles", availableRoles);
+    
+    return "profile";
+  }
+
+  @PostMapping("/profile")
+  public String updateProfile(HttpServletRequest request, @ModelAttribute UserCredentials user, Model model) {
+    model.addAttribute("pageName", "profile");
+    model.addAttribute("user", user);
+
+    log.debug("user credentials {}", user);
+
+    return "profile";
   }
   
   ////////////////////////////////////
